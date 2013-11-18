@@ -1,0 +1,88 @@
+Install Git:
+  (git-scm.com/book/en/Getting-Started-Installing-Git:)
+
+$ sudo apt-get install git
+
+----------------------------------------------------------
+
+Set up Git:
+  (git-scm.com/book/en/Getting-Started-First-Time-Git-Setup)
+
+$ git config --global user.name "John Doe"
+$ git config --global user.email johndoe@example.com
+
+----------------------------------------------------------
+
+Set up a GitHub account (use same email as before):
+  (https://help.github.com/articles/generating-ssh-keys)
+
+https://github.com/
+
+----------------------------------------------------------
+
+Set up SSH keys and test:
+  (https://help.github.com/articles/generating-ssh-keys)
+
+$ cd ~/.ssh
+$ ls
+# look for id_rsa.pub or id_dsa.pub, if there skip next 2 cmds
+$ ssh-keygen -t rsa -C "your_email@example.com"
+  # Creates a new ssh key, using the provided email as a label
+  # Generating public/private rsa key pair.
+  # Enter file in which to save the key (/home/you/.ssh/id_rsa):
+$ ssh-add id_rsa
+#enter your passphrase
+
+sudo apt-get install xclip
+xclip -sel clip < ~/.ssh/id_rsa.pub
+
+go https://github.com/settings/ssh
+click "Add SSH key", paste key in "Key" field, click "Add key"
+
+Test:
+$ ssh -T git@github.com
+
+----------------------------------------------------------
+
+Acquire "tankbot" repo!
+
+$ cd ~/catkin_ws/
+#Rename src/ if you want to keep it OR delete src/ completely
+  #Rename (move):
+  $ mv src/ old_src/ 
+  #Remove (remove, recursive/forced)
+  $ rm -rf src/
+
+#Git clone 'installs' repo. Final argument renames it.
+$ git clone git@github.com:mattjrush/tankbot.git src/
+
+#Test to see that git works. Modify test.txt and push to GitHub.
+$ gedit src/test.txt
+$ git status
+$ git add src/test.txt
+$ git commit -m '<some explanatory message of changes>'
+$ git pull
+$ git push
+
+#Test to see that ROS works. catkin_make your workspace
+$ catkin_make
+
+#Party!
+
+              ^ _...._      ^
+              .'      '.  _...._
+         ^   /          \'      '.
+             |X        /          \
+           -. \        |X         |  ^
+         .-. |'.-.   .' \        /
+            \;/  `/\`    '.    .'
+            / \   (        `/\`
+           /   \   \    ^    `)
+       ^  /     \   )        (     ^
+         /'-...-'\ (          \
+        /-.__ __.-\            )
+       '._   `   _.'  ^       /
+          `"""""` 
+
+
+

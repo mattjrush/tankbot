@@ -1,0 +1,8 @@
+http://wiki.ros.org/urg_node
+https://github.com/ros-drivers/urg_node
+
+http://sourceforge.net/p/urgnetwork/wiki/structure_en/
+http://sourceforge.net/p/urgnetwork/wiki/UTM-30-EW%20on%20ROS/
+
+http://devel.iri.upc.edu/docs/labrobotica/hokuyo_laser_2d/index.html
+
