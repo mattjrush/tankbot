@@ -1,0 +1,4 @@
+<launch>
+  <node name="joy_node" pkg="joy" type="joy_node" />
+  <node name="joy_joy" pkg="send_joystick_command" type="send_joy_udp.py" />
+</launch>
