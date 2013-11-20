@@ -1,0 +1,1 @@
+install urg_node: sudo apt-get install ros-hydro-urg-node
