@@ -3,6 +3,7 @@
 
 import roslib; roslib.load_manifest('pi_robot')
 import rospy
+import math
 from sensor_msgs.msg import LaserScan
 from tf.broadcaster import TransformBroadcaster
 
@@ -14,10 +15,35 @@ def receive_packet():
     sock.bind((UDP_IP, UDP_PORT))
     data, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
 
-def parse_data(data):
-    #stuff
+    return data
 
+def parse_packet(data):
 
+    attributes = data.strip(";")
+    return attributes
+    
+def configure_scan(scan, atts):
+
+    #data[0] = min angle (degrees)
+    #data[1] = max angle (degrees)
+    #data[2] = timestep (ms)
+    #data[3] = lidar scan array
+    #data[4] = min range
+    #data[5] = max range
+
+    scan.header.stamp = rospy.Time.now()        
+    scan.header.frame_id = "base_link"
+    scan.angle_min = float(math.degrees(-data[0]))
+    scan.angle_max = float(math.degrees(data[1]))
+    scan.angle_increment = float(math.degrees(.25)) #get from lidar
+    scan.time_increment = float(25 / 1440) #time in ms / measurements
+    scan.scan_time = float(data[2])
+    scan.range_min = float(data[4])
+    scan.range_max = float(data[5])
+
+    string_array = data[3].split(",")
+    scan.ranges = [float(r) for r in string_array]
+   
 #
 # Laser scans angles are measured counter clockwise, with 0 facing forward
 # (along the x-axis) of the device frame
@@ -40,8 +66,6 @@ scanPub = rospy.Publisher('base_scan', LaserScan) # node publishing LaserScan to
 scanBroadcaster = TransformBroadcaster()
 
 
-scan_rate = 1 #THIS NEEDS TO BE SET
-rate = rospy.Rate(scan_rate)
 
 while not rospy.is_shutdown():
 #    scanBroadcaster.sendTransform(
@@ -52,25 +76,33 @@ while not rospy.is_shutdown():
 #    "base_link"
 #    )
     
-    ranges = list()
-    
-    for i in range(30):
-        ranges.append(5)
-    
     scan = LaserScan()
-    scan.header.stamp = rospy.Time.now()        
-    scan.header.frame_id = "base_link"
-    scan.angle_min = -scan.angle_increment*(num_readings/2);
-    scan.angle_max = scan.angle_increment*(num_readings/2);
-    scan.angle_increment = 0.00436
-    scan.time_increment = (1 / laser_frequency) / (num_readings)
-    scan.scan_time = scan_rate
-    scan.range_min = 0.0
-    scan.range_max = 100.0
-    scan.ranges = ranges    
+
+    lidar_string = receive_packet()
+    data = parse_packet(lidar_string)
+    configure_scan(scan, data) 
+
     scanPub.publish(scan)
 
-    rate.sleep()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
