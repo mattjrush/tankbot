@@ -1,1 +1,20 @@
-install urg_node: sudo apt-get install ros-hydro-urg-node
+
+
+if working with ros and get following, make sure sourced! If that not, maybe check for roscore running.
+
+Traceback (most recent call last):
+  File "py_laser_scan_publisher.py", line 81, in <module>
+    rospy.init_node('test')
+  File "/opt/ros/hydro/lib/python2.7/dist-packages/rospy/client.py", line 303, in init_node
+    rospy.core.configure_logging(resolved_node_name)
+  File "/opt/ros/hydro/lib/python2.7/dist-packages/rospy/core.py", line 235, in configure_logging
+    _log_filename = rosgraph.roslogging.configure_logging('rospy', level, filename=filename)
+  File "/opt/ros/hydro/lib/python2.7/dist-packages/rosgraph/roslogging.py", line 87, in configure_logging
+    rosgraph_d = rospkg.RosPack().get_path('rosgraph')
+  File "/usr/local/lib/python2.7/dist-packages/rospkg/rospack.py", line 190, in get_path
+    raise ResourceNotFound(name, ros_paths=self._ros_paths)
+rospkg.common.ResourceNotFound: rosgraph
+ROS path [0]=/opt/ros/hydro/share/ros
+ROS path [1]=/home/matt/catkin_ws
+ROS path [2]=~doh/
+matt@robocoder:~/cat
