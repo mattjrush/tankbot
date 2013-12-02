@@ -10,8 +10,8 @@ from sensor_msgs.msg import LaserScan
 from tf.broadcaster import TransformBroadcaster
 
 def receive_packet():
-    ##UDP_IP = "192.168.49.197"
-    ##UDP_PORT = 12345
+#    UDP_IP = "192.168.51.62"
+#   UDP_PORT = 49152
     UDP_IP = 'localhost' #TEST CODE    
     UDP_PORT = 49152 #TEST CODE
 
@@ -31,6 +31,8 @@ def configure_scan(scan, lidar_string):
     #data[3] = lidar scan array
     #data[4] = min range
     #data[5] = max range	
+
+    print data
 
     scan.header.stamp = rospy.Time.now()        
     scan.header.frame_id = "base_link"
