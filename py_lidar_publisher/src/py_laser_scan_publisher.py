@@ -10,16 +10,16 @@ from sensor_msgs.msg import LaserScan
 from tf.broadcaster import TransformBroadcaster
 
 def receive_packet():
-#    UDP_IP = "192.168.51.62"
-#   UDP_PORT = 49152
-    UDP_IP = 'localhost' #TEST CODE    
-    UDP_PORT = 49152 #TEST CODE
+    UDP_IP = "192.168.51.62"
+    UDP_PORT = 49152
+#    UDP_IP = 'localhost' #TEST CODE    
+#    UDP_PORT = 49152 #TEST CODE
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
-    data, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
+    packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
 
-    return data
+    return packet
     
 def configure_scan(scan, lidar_string):
 
@@ -32,7 +32,7 @@ def configure_scan(scan, lidar_string):
     #data[4] = min range
     #data[5] = max range	
 
-    print data
+    #print data
 
     scan.header.stamp = rospy.Time.now()        
     scan.header.frame_id = "base_link"
@@ -44,7 +44,9 @@ def configure_scan(scan, lidar_string):
     scan.range_min = float(data[4])
     scan.range_max = float(data[5])
 
-    string_array = data[3].strip("[").strip("]").split(",")
+#    string_array = data[3].strip("[").strip("]").split(",")
+    string_array = data[3].split(",")
+    print string_array
     scan.ranges = [float(r) for r in string_array]
     scan.intensities = []
    
