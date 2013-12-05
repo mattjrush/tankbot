@@ -1,0 +1,9 @@
+<launch>
+
+  <node pkg="robot_setup_tf" type="tf_broadcaster" name="tf_broadcaster"/>
+
+  <node name="lidar_node" pkg="py_lidar_publisher" type="py_laser_scan_publisher.py"/>
+
+  <node name="odom_node" pkg="py_odom_publisher" type="py_odom_publisher.py"/>
+
+</launch>
