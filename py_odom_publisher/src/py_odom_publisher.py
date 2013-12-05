@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import math
 import socket
 
@@ -9,10 +11,10 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Point, Quaternion #msg.pose.pose.position = Point(self.x, self.y, self.z) and msg.pose.pose.orientation = Quaternion(*(kdl.Rotation.RPY(R, P, Y).GetQuaternion()))
 
 def receive_packet():
-#    UDP_IP = "192.168.51.62"
-#    UDP_PORT = 49152
-    UDP_IP = 'localhost' #TEST CODE    
-    UDP_PORT = 49153 #TEST CODE
+    UDP_IP = "192.168.51.62"
+    UDP_PORT = 49153
+#    UDP_IP = 'localhost' #TEST CODE    
+#    UDP_PORT = 49153 #TEST CODE
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))

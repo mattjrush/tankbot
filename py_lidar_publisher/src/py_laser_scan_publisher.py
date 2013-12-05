@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 #Example from: http://forums.trossenrobotics.com/printthread.php?t=4304&pp=10&page=8
 
@@ -47,8 +48,12 @@ def configure_scan(scan, lidar_string):
 #    string_array = data[3].strip("[").strip("]").split(",")
     string_array = data[3].split(",")
     print string_array
-    scan.ranges = [float(r) for r in string_array]
-    scan.intensities = []
+    try:
+        scan.ranges = [float(r) for r in string_array]
+        scan.intensities = []
+    except ValueError:
+        print "range vals failed"
+
    
 #
 # Laser scans angles are measured counter clockwise, with 0 facing forward
