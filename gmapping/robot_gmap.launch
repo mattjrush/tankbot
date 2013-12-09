@@ -2,8 +2,16 @@
 
   <node pkg="robot_setup_tf" type="tf_broadcaster" name="tf_broadcaster"/>
 
-  <node name="lidar_node" pkg="py_lidar_publisher" type="py_laser_scan_publisher.py"/>
+  <node name="base_scan" pkg="py_lidar_publisher" type="py_laser_scan_publisher.py"/>
 
-  <node name="odom_node" pkg="py_odom_publisher" type="py_odom_publisher.py"/>
+  <node name="odom" pkg="py_odom_publisher" type="py_odom_publisher.py"/>
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="delta" value="0.02"/>
+    <param name="maxUrange" value="10"/>
+    <param name="maxRange" value="20"/>
+    <param name="temporalUpdate" value="1"/>
+    <remap from="/scan" to="/base_scan" />
+  </node>
 
 </launch>

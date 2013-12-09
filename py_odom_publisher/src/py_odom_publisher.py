@@ -19,10 +19,11 @@ def receive_packet():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
     packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
+    print packet
 
     return packet
 
-# create ros::Publisher to send LaserScan messages
+# create ros::Publisher to send Odometry messages
 rospy.init_node("odom") #ros::NodeHandle n;
 odom_pub = rospy.Publisher('odom', Odometry) # node publishing Odometry to 'odom'
 odom_br = tf.TransformBroadcaster() #or without the tf.

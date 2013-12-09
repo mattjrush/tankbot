@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>camera_viewer</name>
+  <name>py_cam_pub</name>
   <version>0.0.0</version>
-  <description>The camera_viewer package</description>
+  <description>The py_cam_pub package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/camera_viewer</url> -->
+  <!-- <url type="website">http://wiki.ros.org/py_cam_pub</url> -->
 
 
   <!-- Author tags are optional, mutiple are allowed, one per tag -->
@@ -40,11 +40,12 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>image_transport</build_depend>
-  <build_depend>image_view</build_depend>
-  <run_depend>image_transport</run_depend>
-  <run_depend>image_view</run_depend>
-
+  <build_depend>rospy</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>roslib</build_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>roslib</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

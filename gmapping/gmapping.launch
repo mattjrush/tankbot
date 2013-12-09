@@ -1,0 +1,10 @@
+<launch>
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="delta" value="0.02"/>
+    <param name="maxUrange" value="10"/>
+    <param name="maxRange" value="20"/>
+    <param name="temporalUpdate" value="1"/>
+  </node>
+
+</launch>
