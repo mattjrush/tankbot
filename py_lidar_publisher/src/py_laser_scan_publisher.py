@@ -10,19 +10,27 @@ import rospy
 from sensor_msgs.msg import LaserScan
 from tf.broadcaster import TransformBroadcaster
 
-def receive_packet():
-    UDP_IP = "192.168.51.62"
-    UDP_PORT = 49152
-#    UDP_IP = 'localhost' #TEST CODE    
-#    UDP_PORT = 49152 #TEST CODE
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-    sock.bind((UDP_IP, UDP_PORT))
-    packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
+class LidarNode:
 
-    return packet
+    def __init__(self):
+        # Get the ~private namespace parameters from command line or launch file.
+        self.UDP_IP = rospy.get_param('~UDP_IP', get_ip.get_local())
+        self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49154'))
+        self.parent = rospy.get_param('~parent', 'odom')
+        self.child = rospy.get_param('~child', 'base_link')
+
+        self.num_readings = rospy.get_param('~num_readings', 1440)
+
+    def receive_packet():
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+        sock.bind((UDP_IP, UDP_PORT))
+        packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
+
+        return packet
     
-def configure_scan(scan, lidar_string):
+def create_lidar_msg(scan, lidar_string):
 
     data = lidar_string.split(";")
     num_readings = 1440
@@ -42,8 +50,8 @@ def configure_scan(scan, lidar_string):
     scan.angle_increment = math.radians(.25) #get from lidar
     scan.time_increment = float(25. / num_readings) #time in ms / measurements
     scan.scan_time = float(data[2])
-    scan.range_min = float(data[4])
-    scan.range_max = float(data[5])
+    scan.range_min = float(data[4]) / 1000 #sent in mm
+    scan.range_max = float(data[5]) / 1000 #sent in mm
 
 #    string_array = data[3].strip("[").strip("]").split(",")
     string_array = data[3].split(",")
@@ -54,7 +62,10 @@ def configure_scan(scan, lidar_string):
     except ValueError:
         print "range vals failed"
 
-   
+    def create_header(self):
+        head = Header()
+        head.stamp = rospy.Time.now() #YOYOYOYOshould be from robot
+        head.frame_id = self.parent
 #
 # Laser scans angles are measured counter clockwise, with 0 facing forward
 # (along the x-axis) of the device frame

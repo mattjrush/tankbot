@@ -1,0 +1,26 @@
+<launch>
+
+  <node name="robot_setup_tf" pkg="py_tf_broadcaster" type="tf_broadcaster.py"
+    <param name="offset_x" value="0.3556">
+    <param name="offset_z" value="0.2">
+  </node>
+
+  <node name="base_scan" pkg="py_lidar_publisher" type="lidar_pub.py"
+    <param name="num_readings" value="1440">
+  </node>
+
+  <node name="odom" pkg="py_odom_publisher" type="odom_pub.py"/>
+
+  <node name="cam" pkg="py_cam_pub" type="cam_pub.py"/>
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="delta" value="0.02"/>
+    <param name="maxUrange" value="10"/>
+    <param name="maxRange" value="20"/>
+    <param name="linearUpdate" value="0"/>
+    <param name="angularUpdate" value="0"/>
+    <param name="temporalUpdate" value="1"/>
+    <remap from="/scan" to="/base_scan" />
+  </node>
+
+</launch>

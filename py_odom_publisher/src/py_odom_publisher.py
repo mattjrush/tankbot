@@ -11,7 +11,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Point, Quaternion #msg.pose.pose.position = Point(self.x, self.y, self.z) and msg.pose.pose.orientation = Quaternion(*(kdl.Rotation.RPY(R, P, Y).GetQuaternion()))
 
 def receive_packet():
-    UDP_IP = "192.168.51.62"
+    UDP_IP = "192.168.51.175"
     UDP_PORT = 49153
 #    UDP_IP = 'localhost' #TEST CODE    
 #    UDP_PORT = 49153 #TEST CODE

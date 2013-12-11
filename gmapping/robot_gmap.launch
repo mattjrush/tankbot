@@ -10,6 +10,8 @@
     <param name="delta" value="0.02"/>
     <param name="maxUrange" value="10"/>
     <param name="maxRange" value="20"/>
+    <param name="linearUpdate" value="0"/>
+    <param name="angularUpdate" value="0"/>
     <param name="temporalUpdate" value="1"/>
     <remap from="/scan" to="/base_scan" />
   </node>

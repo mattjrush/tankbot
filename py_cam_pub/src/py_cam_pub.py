@@ -8,7 +8,7 @@ import rospy
 from sensor_msgs.msg import CompressedImage
 
 def receive_packet():
-    UDP_IP = "192.168.51.62"
+    UDP_IP = "192.168.51.175"
     UDP_PORT = 49154
 #    UDP_IP = 'localhost' #TEST CODE    
 #    UDP_PORT = 49155 #TEST CODE
