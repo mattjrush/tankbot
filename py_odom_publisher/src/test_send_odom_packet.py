@@ -6,7 +6,7 @@ import rospy
 def send_packet(string_data):
 
     UDP_IP = "localhost"
-    UDP_Port = 49153
+    UDP_Port = 49152
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
     sock.sendto(string_data, (UDP_IP, UDP_Port))   
 

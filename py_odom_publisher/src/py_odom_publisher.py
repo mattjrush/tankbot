@@ -3,18 +3,19 @@
 import math
 import socket
 
-
 import roslib #roslib.load_manifest('odom_publisher')
 import rospy
 import tf
+
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Point, Quaternion #msg.pose.pose.position = Point(self.x, self.y, self.z) and msg.pose.pose.orientation = Quaternion(*(kdl.Rotation.RPY(R, P, Y).GetQuaternion()))
 
+#import get_ip
+
 def receive_packet():
-    UDP_IP = "192.168.51.175"
-    UDP_PORT = 49153
-#    UDP_IP = 'localhost' #TEST CODE    
-#    UDP_PORT = 49153 #TEST CODE
+    UDP_IP = "192.168.48.72" #get_ip.get_local()
+    #UDP_IP = 'localhost' #TEST CODE
+    UDP_PORT = 49152
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
@@ -32,7 +33,10 @@ x = 0
 y = 0
 th = 0
 
+#crappy test
+t = True
 while not rospy.is_shutdown():
+#    scanBroadcaster.sendTransform(
 #    scanBroadcaster.sendTransform(
 #    (0, 0, 0), 
 #    (0, 0, 0, 1),
@@ -71,7 +75,10 @@ while not rospy.is_shutdown():
     odom_msg.pose.pose.position.x = x
     odom_msg.pose.pose.position.y = y
     odom_msg.pose.pose.position.z = 0.0
-    odom_msg.pose.pose.orientation = odom_quat
+    odom_msg.pose.pose.orientation.x = odom_quat[0]
+    odom_msg.pose.pose.orientation.y = odom_quat[1]
+    odom_msg.pose.pose.orientation.z = odom_quat[2]
+    odom_msg.pose.pose.orientation.w = odom_quat[3]
 
     #set the velocity
     odom_msg.twist.twist.linear.x = 0
@@ -83,4 +90,9 @@ while not rospy.is_shutdown():
 
     #publish the transform over tf
     odom_br.sendTransform((x, y, 0), odom_quat, stamp, child, parent)
-    print x, y
+
+    #crappy test continued
+    if t:
+        print "Odometry Running"
+        print odom_msg
+    t = False

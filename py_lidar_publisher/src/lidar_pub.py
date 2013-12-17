@@ -5,7 +5,7 @@
 import math
 import socket
 import sys
-sys.path.insert(0, '../')
+#sys.path.insert(0, '../')
 
 import roslib; ##roslib.load_manifest('pi_robot')
 import rospy
@@ -14,13 +14,13 @@ from tf.broadcaster import TransformBroadcaster
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Header
 
-import get_ip
+#import get_ip
 
 class LidarNode:
 
     def __init__(self):
         # Get the ~private namespace parameters from command line or launch file.
-        self.UDP_IP = get_ip.get_local()
+        self.UDP_IP = "192.168.48.72" #get_ip.get_local()
         self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49151'))
         self.parent = rospy.get_param('~parent', 'base_scan')
         self.child = rospy.get_param('~child', 'base_link')
@@ -34,10 +34,6 @@ class LidarNode:
         #crappy test
         t = True
         while not rospy.is_shutdown():
-            #crappy test continued
-            if t:
-                print "Lidar Running"
-            t = False
         #    scanBroadcaster.sendTransform(
         #    (0, 0, 0), 
         #    (0, 0, 0, 1),
@@ -50,6 +46,12 @@ class LidarNode:
             scan = self.create_lidar_msg(lidar_string) 
 
             self.scanPub.publish(scan)
+
+            #crappy test continued
+            if t:
+                print "Lidar Running"
+                print scan 
+            t = False
 
     def receive_packet(self):
 
@@ -85,7 +87,7 @@ class LidarNode:
 
         #print data
 
-        lidar_msg.header = create_header()
+        lidar_msg.header = create_header() #self?
         lidar_msg.angle_min = math.radians(float(data[0]))
         lidar_msg.angle_max = math.radians(float(data[1]))
         lidar_msg.angle_increment = math.radians(.25) #get from lidar
@@ -94,13 +96,17 @@ class LidarNode:
         lidar_msg.range_min = float(data[4]) / 1000 #sent in mm, should be meters
         lidar_msg.range_max = float(data[5]) / 1000 #sent in mm, should be meters
 
+
+        array_string = data[3].translate(None, '[]')
+        string_array = array_string.split(",")
+        lidar_msg.ranges = [float(r) / 1000 for r in string_array] #better way?
     #    string_array = data[3].strip("[").strip("]").split(",")
-        string_array = data[3].split(",")
-        try:
-            lidar_msg.ranges = [float(r) for r in string_array]
-            lidar_msg.intensities = []
-        except ValueError:
-            print "range vals failed"
+        # string_array = data[3].split(",")
+        # try:
+        #     lidar_msg.ranges = [float(r) for r in string_array]
+        #     lidar_msg.intensities = []
+        # except ValueError:
+        #     print "range vals failed"
 
         return lidar_msg
 

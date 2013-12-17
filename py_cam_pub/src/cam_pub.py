@@ -20,7 +20,7 @@ class CamNode:
         self.UDP_IP = get_ip.get_local()
         #if self.UDP_IP != 'localhost':
         #    self.UDP_IP = int(self.UDP_IP)
-        self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49154'))
+        self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49153'))
 
         # Create a dynamic reconfigure server.
         #self.server = DynamicReconfigureServer(ConfigType, self.reconfigure)

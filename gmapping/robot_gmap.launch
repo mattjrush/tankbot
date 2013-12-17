@@ -1,10 +1,16 @@
 <launch>
 
-  <node pkg="robot_setup_tf" type="tf_broadcaster" name="tf_broadcaster"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_link2base_scan" args="0.3556 0 0.2 0 0 0 base_link base_scan 100" />
 
-  <node name="base_scan" pkg="py_lidar_publisher" type="py_laser_scan_publisher.py"/>
+  <node name="base_scan" pkg="py_lidar_publisher" type="py_laser_scan_publisher.py" cwd="node"/>
 
-  <node name="odom" pkg="py_odom_publisher" type="py_odom_publisher.py"/>
+  <!--node type="laser_scan_assembler" pkg="laser_assembler" name="visualizer">
+    <remap from="scan" to="assembled_scan"/>
+    <param name="max_scans" type="int" value="500" />
+    <param name="fixed_frame" type="string" value="/map" />
+  </node>-->
+
+  <node name="odom" pkg="py_odom_publisher" type="py_odom_publisher.py" cwd="node"/>
 
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
     <param name="delta" value="0.02"/>

@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
 import socket
+import sys
 
 import roslib #roslib.load_manifest('')
 import rospy
 
 from sensor_msgs.msg import CompressedImage
 
+#import get_ip
+
 def receive_packet():
-    UDP_IP = "192.168.51.175"
-    UDP_PORT = 49154
+    UDP_IP = "192.168.51.175" #get_ip.get_local()
+    UDP_PORT = 49153
 #    UDP_IP = 'localhost' #TEST CODE    
 #    UDP_PORT = 49155 #TEST CODE
 
@@ -32,7 +35,13 @@ def parse_string(s):
 rospy.init_node("cam") #ros::NodeHandle n;
 cam_pub = rospy.Publisher('image_raw/compressed', CompressedImage)
 
+#crappy test
+t = True
 while not rospy.is_shutdown():
+    #crappy test continued
+    if t:
+        print "Cam Running"
+    t = False#    scanBroadcaster.sendTransform(
 
     udp_string = receive_packet()
     jpg_string = parse(udp_string)

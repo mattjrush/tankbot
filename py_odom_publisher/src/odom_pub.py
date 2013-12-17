@@ -3,7 +3,7 @@
 import math
 import socket
 import sys
-sys.path.insert(0, '../')
+# sys.path.insert(0, '../')
 
 import roslib #roslib.load_manifest('odom_publisher')
 import rospy
@@ -13,13 +13,13 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Point, Quaternion #msg.pose.pose.position = Point(self.x, self.y, self.z) and msg.pose.pose.orientation = Quaternion(*(kdl.Rotation.RPY(R, P, Y).GetQuaternion()))
 from std_msgs.msg import Header
 
-import get_ip
+#import get_ip
 
 class OdomNode:
 
     def __init__(self):
         # Get the ~private namespace parameters from command line or launch file.
-        self.UDP_IP = get_ip.get_local()
+        self.UDP_IP = "192.168.48.72" #get_ip.get_local()
         self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49152'))
         self.parent = rospy.get_param('~parent', 'odom')
         self.child = rospy.get_param('~child', 'base_link')
@@ -35,10 +35,6 @@ class OdomNode:
         #crappy test
         t = True
         while not rospy.is_shutdown():
-            #crappy test continued
-            if t:
-                print "Odometry Running"
-            t = False
 
             odom_string = self.receive_packet()
             data = odom_string.split("%")
@@ -52,6 +48,12 @@ class OdomNode:
 
             #publish the transform over tf
             self.odom_br.sendTransform((x, y, 0), odom_quat, stamp, child, parent)
+
+            #crappy test continued
+            if t:
+                print "Odometry Running"
+                print odom
+            t = False
 
     def receive_packet(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
@@ -71,7 +73,10 @@ class OdomNode:
         odom_msg.pose.pose.position.x = self.x
         odom_msg.pose.pose.position.y = self.y
         odom_msg.pose.pose.position.z = 0.0
-        odom_msg.pose.pose.orientation = self.odom_quat
+        odom_msg.pose.pose.orientation.x = odom_quat[0]
+        odom_msg.pose.pose.orientation.y = odom_quat[1]
+        odom_msg.pose.pose.orientation.z = odom_quat[2]
+        odom_msg.pose.pose.orientation.w = odom_quat[3]
 
         #set the velocity YOYOYOYOYOYOYOYOYOYOYO
         odom_msg.twist.twist.linear.x = 0

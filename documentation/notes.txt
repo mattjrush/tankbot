@@ -1,4 +1,4 @@
-
+motor - to have cnts vel, send cnts commands
 
 if working with ros and get following, make sure sourced! If that not, maybe check for roscore running.
 
