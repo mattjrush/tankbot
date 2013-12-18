@@ -9,11 +9,12 @@ import rospy
 
 from std_msgs.msg import String
 
-#import get_ip
+import get_ip
 
 def receive_packet():
-    #UDP_IP = "192.168.48.72" #get_ip.get_local()
-    UDP_IP = 'localhost' #TEST CODE    
+    #UDP_IP = "192.168.48.72" 
+    UDP_IP = get_ip.get_local()
+    #UDP_IP = 'localhost' #TEST CODE    
     UDP_PORT = 49151
  
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
