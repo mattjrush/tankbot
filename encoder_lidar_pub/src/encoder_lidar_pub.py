@@ -12,8 +12,8 @@ from std_msgs.msg import String
 #import get_ip
 
 def receive_packet():
-    UDP_IP = "192.168.48.72" #get_ip.get_local()
-    #UDP_IP = 'localhost' #TEST CODE    
+    #UDP_IP = "192.168.48.72" #get_ip.get_local()
+    UDP_IP = 'localhost' #TEST CODE    
     UDP_PORT = 49151
  
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
@@ -47,20 +47,23 @@ while not rospy.is_shutdown():
 #    "base_link"
 #    )
 
-    wheels = String()
-    scan = String()    
+    #wheels = String()
+    #scan = String()    
 
     robot_string = receive_packet()
-    wheels.data = seperate(robot_string, "encoders")
-    scan.data = seperate(robot_string, "lidar")
+    wheels = str(separate(robot_string, "encoders"))
+    scan = str(separate(robot_string, "lidar"))
 
+    # wheelPub.publish(wheels)
+    # scanPub.publish(scan)
     wheelPub.publish(wheels)
     scanPub.publish(scan)
 
     #crappy test continued
     if t:
         print "Lidar Running"
-        print scan
+        # print scan
+        # print wheels
     t = False
 
 

@@ -11,9 +11,9 @@ from sensor_msgs.msg import CompressedImage
 #import get_ip
 
 def receive_packet():
-    UDP_IP = "192.168.51.175" #get_ip.get_local()
-    UDP_PORT = 49153
-#    UDP_IP = 'localhost' #TEST CODE    
+    #UDP_IP = "192.168.51.175" #get_ip.get_local()
+    UDP_PORT = 49151
+    UDP_IP = 'localhost' #TEST CODE    
 #    UDP_PORT = 49155 #TEST CODE
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP

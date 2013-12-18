@@ -3,15 +3,12 @@
 #Example from: http://forums.trossenrobotics.com/printthread.php?t=4304&pp=10&page=8
 
 import math
-import socket
-import sys
-#sys.path.insert(0, '../')
 
 import roslib; ##roslib.load_manifest('pi_robot')
 import rospy
 
-from tf.broadcaster import TransformBroadcaster
 from sensor_msgs.msg import LaserScan
+from std_msgs.msg import String
 from std_msgs.msg import Header
 
 #import get_ip
@@ -23,32 +20,19 @@ class LidarNode:
         self.parent = rospy.get_param('~parent', 'base_scan')
         self.child = rospy.get_param('~child', 'base_link')
 
+        # Initialize the node and name it.
+        rospy.init_node("base_scan") #ros::NodeHandle n;
+        # create ros::Publisher to send LaserScan messages
+        scanPub = rospy.Publisher('base_scan', LaserScan) 
+
         self.num_readings = rospy.get_param('~num_readings', 1000)
 
-        # create ros::Publisher to send LaserScan messages
-        scanPub = rospy.Publisher('base_scan', LaserScan) # node publishing LaserScan to 'base_scan'
-        #scanBroadcaster = TransformBroadcaster()
+    def create_header(self):
+        head = Header()
+        head.stamp = rospy.Time.now() #YOYOYOYOshould be from robot
+        head.frame_id = self.parent
 
-        #crappy test
-        t = True
-        while not rospy.is_shutdown():
-        #    scanBroadcaster.sendTransform(
-        #    (0, 0, 0), 
-        #    (0, 0, 0, 1),
-        #    rospy.Time.now(),
-        #    "base_scan",
-        #    "base_link"
-        #    )
-
-            lidar_string = self.receive_packet()
-            scan = self.create_lidar_msg(lidar_string) 
-
-            self.scanPub.publish(scan)
-
-            #crappy test continued
-            if t:
-                print "Lidar Running"
-                print scan 
+        return head
 
     # Laser scans angles are measured counter clockwise, with 0 facing forward
     # (along the x-axis) of the device frame
@@ -63,19 +47,13 @@ class LidarNode:
     #float32 range_max        # maximum range value [m]
     #float32[] ranges         # range data [m] (Note: values < range_min or > range_max should be discarded)
     #float32[] intensities    # intensity data [device-specific units] array empty if no data
-    def create_lidar_msg(lidar_string):
-        lidar_msg = LaserScan()    
-        data = lidar_string.split(";")
-        #num_readings = 1440 --------------------------------
-        #data[0] = min angle (degrees)
-        #data[1] = max angle (degrees)
-        #data[2] = timestep (ms)
-        #data[3] = lidar scan array
-        #data[4] = min range
-        #data[5] = max range	
-
-        #print data
-
+    def create_lidar_msg(self, L):
+ 
+        raw_lidar = L.data
+        stripped_lidar = raw_lidar.translate(None, '[]').translate(None, '"').translate(None, '\'')
+        array_lidar = stripped_lidar.split(",")
+        
+        lidar_msg = LaserScan()
         lidar_msg.header = create_header() #self?
         lidar_msg.angle_min = math.radians(float(data[0]))
         lidar_msg.angle_max = math.radians(float(data[1]))
@@ -89,30 +67,19 @@ class LidarNode:
         array_string = data[3].translate(None, '[]')
         string_array = array_string.split(",")
         lidar_msg.ranges = [float(r) / 1000 for r in string_array] #better way?
-    #    string_array = data[3].strip("[").strip("]").split(",")
-        # string_array = data[3].split(",")
-        # try:
-        #     lidar_msg.ranges = [float(r) for r in string_array]
-        #     lidar_msg.intensities = []
-        # except ValueError:
-        #     print "range vals failed"
 
-        return lidar_msg
+        scanPub.publish(scan)
 
-    def create_header(self):
-        head = Header()
-        head.stamp = rospy.Time.now() #YOYOYOYOshould be from robot
-        head.frame_id = self.parent
-
-        return head
+    def update(self):
+        
+        rospy.Subscriber("lidar_vals", String, self.create_lidar_msg)
+        rospy.spin()
 
 if __name__ == '__main__':
-    # Initialize the node and name it.
-    rospy.init_node("base_scan") #ros::NodeHandle n;
-    rospy.Subscriber("", String)
 
     try:
         ln = LidarNode()
+        ln.update()
     except rospy.ROSInterruptException: 
         pass
 
