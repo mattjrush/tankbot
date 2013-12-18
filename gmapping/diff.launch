@@ -1,0 +1,29 @@
+<launch>
+
+  <node name="raw_robot" pkg="encoder_lidar_pub" type="encoder_lidar_pub.py"/>
+
+  <node name="raw_odom" pkg="py_odom_publisher" type="py_odom_publisher.py"/>
+
+  <node name="base_scan" pkg="py_lidar_publisher" type="py_laser_scan_publisher.py"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="base_link2base_scan" args="0.3556 0 0.2 0 0 0 base_link base_scan 100" />
+
+  <node name="diff_pub" pkg="diff_tf" type="diff_tf.py" cwd="node">
+    <param name="base_width" value=".41"/>
+    <param name="encoder_min" value="-20000"/>
+    <param name="encoder_max" value="20000"/>
+    <param name="meter" value="2000"/>
+    <param name="ticks" value="0.6094"/>
+    </node>
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="delta" value="0.02"/>
+    <param name="maxUrange" value="2.9"/>
+    <param name="maxRange" value="3"/>
+    <param name="linearUpdate" value="0"/>
+    <param name="angularUpdate" value="0"/>
+    <param name="temporalUpdate" value="1"/>
+    <remap from="/scan" to="/base_scan" />
+  </node>
+
+</launch>

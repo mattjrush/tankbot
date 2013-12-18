@@ -19,7 +19,7 @@ class OdomNode:
 
     def __init__(self):
         # Get the ~private namespace parameters from command line or launch file.
-        self.UDP_IP = "192.168.48.72" #get_ip.get_local()
+        self.UDP_IP = rospy.get_param('~UDP_IP', '192.168.48.72') #get_ip.get_local()
         self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49152'))
         self.parent = rospy.get_param('~parent', 'odom')
         self.child = rospy.get_param('~child', 'base_link')

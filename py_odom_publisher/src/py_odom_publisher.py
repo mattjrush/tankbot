@@ -1,98 +1,60 @@
 #!/usr/bin/env python
 
+#Example from: http://forums.trossenrobotics.com/printthread.php?t=4304&pp=10&page=8
+
 import math
 import socket
 
-import roslib #roslib.load_manifest('odom_publisher')
+import roslib; ##roslib.load_manifest('pi_robot')
 import rospy
-import tf
 
-from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Point, Quaternion #msg.pose.pose.position = Point(self.x, self.y, self.z) and msg.pose.pose.orientation = Quaternion(*(kdl.Rotation.RPY(R, P, Y).GetQuaternion()))
-
-#import get_ip
-
-def receive_packet():
-    UDP_IP = "192.168.48.72" #get_ip.get_local()
-    #UDP_IP = 'localhost' #TEST CODE
-    UDP_PORT = 49152
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-    sock.bind((UDP_IP, UDP_PORT))
-    packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
-    print packet
-
-    return packet
-
-# create ros::Publisher to send Odometry messages
-rospy.init_node("odom") #ros::NodeHandle n;
-odom_pub = rospy.Publisher('odom', Odometry) # node publishing Odometry to 'odom'
-odom_br = tf.TransformBroadcaster() #or without the tf.
-
-x = 0
-y = 0
-th = 0
-
-#crappy test
-t = True
-while not rospy.is_shutdown():
-#    scanBroadcaster.sendTransform(
-#    scanBroadcaster.sendTransform(
-#    (0, 0, 0), 
-#    (0, 0, 0, 1),
-#    rospy.Time.now(),
-#    "base_scan",
-#    "base_link"
-#    )
-
-    odom_string = receive_packet()
-    data = odom_string.split("%")
-
-    changer = int(data[0])
-    dist = float(data[1])
-    angle = math.radians(float(data[2]))
+from std_msgs.msg import Int16
+from std_msgs.msg import String
+from tf.broadcaster import TransformBroadcaster
     
-    if changer == 0:
-        x += dist * math.cos(th)
-        y += dist * math.sin(th)
-    elif changer == 1:
-        th += angle
+def string_to_raw_odom(lidar_string):
+    
+    l_val = Int16()
+    r_val = Int16()
+    
+    package = rstring.split(";")
+    l_val.data = int(package[0])
+    r_val.data = int(package[1])
 
-    #since all odometry is 6DOF we'll need a quaternion created from yaw
-    odom_quat = tf.transformations.quaternion_from_euler(0, 0, th)
+    lPub.Publish(l_val)
+    rPub.Publish(r_val)
+#
+# Laser scans angles are measured counter clockwise, with 0 facing forward
+# (along the x-axis) of the device frame
+#
 
-    stamp = rospy.Time.now()
-    parent = "odom"
-    child = "base_link"
+#Header header
+#float32 angle_min        # start angle of the scan [rad]
+#float32 angle_max        # end angle of the scan [rad]
+#float32 angle_increment  # angular distance between measurements [rad]
+#float32 time_increment   # time between measurements [seconds]
+#float32 scan_time        # time between scans [seconds]
+#float32 range_min        # minimum range value [m]
+#float32 range_max        # maximum range value [m]
+#float32[] ranges         # range data [m] (Note: values < range_min or > range_max should be discarded)
+#float32[] intensities    # intensity data [device-specific units] array empty if no data
 
-    #create ROS odometry message
-    odom_msg = Odometry()
-    odom_msg.header.stamp = stamp
-    odom_msg.header.frame_id = parent
-    odom_msg.child_frame_id = child
+# create ros::Publisher to send LaserScan messages
+#scanBroadcaster = TransformBroadcaster()
 
-    #set the position
-    odom_msg.pose.pose.position.x = x
-    odom_msg.pose.pose.position.y = y
-    odom_msg.pose.pose.position.z = 0.0
-    odom_msg.pose.pose.orientation.x = odom_quat[0]
-    odom_msg.pose.pose.orientation.y = odom_quat[1]
-    odom_msg.pose.pose.orientation.z = odom_quat[2]
-    odom_msg.pose.pose.orientation.w = odom_quat[3]
+def string_to_raw_odom():
+    rospy.init_node('raw_odom')
+    rospy.Subscriber("encoder_vals", String, string_to_raw_odom)
+    lPub = rospy.Publisher('lwheel', Int16) # node publishing LaserScan to 'base_scan'
+    rPub = rospy.Publisher('rwheel', Int16) # node publishing LaserScan to 'base_scan'
 
-    #set the velocity
-    odom_msg.twist.twist.linear.x = 0
-    odom_msg.twist.twist.linear.y = 0
-    odom_msg.twist.twist.angular.z = 0
+    print "Running Lidar"
+    rospy.spin()
 
-    #publish the Ros odometry message
-    odom_pub.publish(odom_msg)
+if __name__ == '__main__':
+    string_to_raw_odom()
 
-    #publish the transform over tf
-    odom_br.sendTransform((x, y, 0), odom_quat, stamp, child, parent)
 
-    #crappy test continued
-    if t:
-        print "Odometry Running"
-        print odom_msg
-    t = False
+
+
+

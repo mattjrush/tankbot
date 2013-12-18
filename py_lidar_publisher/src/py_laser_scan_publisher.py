@@ -9,33 +9,14 @@ import roslib; ##roslib.load_manifest('pi_robot')
 import rospy
 
 from sensor_msgs.msg import LaserScan
+from std_msgs.msg import String
 from tf.broadcaster import TransformBroadcaster
-
-#import get_ip
-
-def receive_packet():
-    UDP_IP = "192.168.48.72" #get_ip.get_local()
-    #UDP_IP = 'localhost' #TEST CODE    
-    UDP_PORT = 49151
- 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-    sock.bind((UDP_IP, UDP_PORT))
-    packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
-
-    return packet
     
-def create_lidar_msg(scan, lidar_string):
-
+def create_lidar_msg(lidar_string):
+    
+    scan = LaserScan() 
     data = lidar_string.split(";")
     num_readings = 1440
-    #data[0] = min angle (degrees)
-    #data[1] = max angle (degrees)
-    #data[2] = timestep (ms)
-    #data[3] = lidar scan array
-    #data[4] = min range
-    #data[5] = max range	
-
-    #print data
 
     scan.header.stamp = rospy.Time.now()        
     scan.header.frame_id = "base_scan"
@@ -46,19 +27,12 @@ def create_lidar_msg(scan, lidar_string):
     scan.scan_time = float(data[2])
     scan.range_min = float(data[4]) / 1000 #sent in mm, needs m
     scan.range_max = float(data[5]) / 1000 #sent in mm, needs m
-
 #    string_array = data[3].strip("[").strip("]").split(",")
     array_string = data[3].translate(None, '[]')
     string_array = array_string.split(",")
-
-    #print string_array
-    # try:
-    #     scan.ranges = [float(r) for r in string_array]
-    #     scan.intensities = []
-    # except ValueError:
-    #     print "range vals failed"
-
     scan.ranges = [float(r) / 1000 for r in string_array] #better way?
+
+    scanPub.publish(scan)
 #
 # Laser scans angles are measured counter clockwise, with 0 facing forward
 # (along the x-axis) of the device frame
@@ -76,39 +50,17 @@ def create_lidar_msg(scan, lidar_string):
 #float32[] intensities    # intensity data [device-specific units] array empty if no data
 
 # create ros::Publisher to send LaserScan messages
-rospy.init_node("base_scan") #ros::NodeHandle n;
-scanPub = rospy.Publisher('base_scan', LaserScan) # node publishing LaserScan to 'base_scan'
-scanBroadcaster = TransformBroadcaster()
+#scanBroadcaster = TransformBroadcaster()
 
+def string_to_laser():
+    rospy.init_node('base_scan')
+    scanPub = rospy.Publisher('base_scan', LaserScan) # node publishing LaserScan to 'base_scan'
+    rospy.Subscriber("lidar_vals", String, create_lidar_msg)
+    print "Running Lidar"
+    rospy.spin()
 
-#crappy test
-t = True
-while not rospy.is_shutdown():
-    #crappy test continued
-    if t:
-        print "Lidar Running"
-    t = False#    scanBroadcaster.sendTransform(
-#    (0, 0, 0), 
-#    (0, 0, 0, 1),
-#    rospy.Time.now(),
-#    "base_scan",
-#    "base_link"
-#    )
-
-    scan = LaserScan()    
-
-    lidar_string = receive_packet()
-    create_lidar_msg(scan, lidar_string) 
-
-    scanPub.publish(scan)
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    string_to_laser()
 
 
 

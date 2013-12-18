@@ -20,16 +20,14 @@ class LidarNode:
 
     def __init__(self):
         # Get the ~private namespace parameters from command line or launch file.
-        self.UDP_IP = "192.168.48.72" #get_ip.get_local()
-        self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49151'))
         self.parent = rospy.get_param('~parent', 'base_scan')
         self.child = rospy.get_param('~child', 'base_link')
 
-        self.num_readings = rospy.get_param('~num_readings', 0)
+        self.num_readings = rospy.get_param('~num_readings', 1000)
 
         # create ros::Publisher to send LaserScan messages
         scanPub = rospy.Publisher('base_scan', LaserScan) # node publishing LaserScan to 'base_scan'
-        scanBroadcaster = TransformBroadcaster()
+        #scanBroadcaster = TransformBroadcaster()
 
         #crappy test
         t = True
@@ -51,15 +49,6 @@ class LidarNode:
             if t:
                 print "Lidar Running"
                 print scan 
-            t = False
-
-    def receive_packet(self):
-
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-        sock.bind((self.UDP_IP, self.UDP_PORT))
-        packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
-
-        return packet
 
     # Laser scans angles are measured counter clockwise, with 0 facing forward
     # (along the x-axis) of the device frame
@@ -120,6 +109,7 @@ class LidarNode:
 if __name__ == '__main__':
     # Initialize the node and name it.
     rospy.init_node("base_scan") #ros::NodeHandle n;
+    rospy.Subscriber("", String)
 
     try:
         ln = LidarNode()

@@ -12,12 +12,12 @@ from dynamic_reconfigure.server import Server as DynamicReconfigureServer
 
 from sensor_msgs.msg import CompressedImage
 
-import get_ip.py
+#import get_ip.py
 
 class CamNode:
     def __init__(self):
         # Get the ~private namespace parameters from command line or launch file.
-        self.UDP_IP = get_ip.get_local()
+        self.UDP_IP = rospy.get_param('~UDP_IP', '192.168.48.72') #get_ip.get_local()
         #if self.UDP_IP != 'localhost':
         #    self.UDP_IP = int(self.UDP_IP)
         self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49153'))
@@ -64,7 +64,7 @@ class CamNode:
 if __name__ == '__main__':
     # Initialize the node and name it.
     rospy.init_node('cam') #ros::NodeHandle n;
-
+    
     try:
         cn = CamNode()
     except rospy.ROSInterruptException: 
