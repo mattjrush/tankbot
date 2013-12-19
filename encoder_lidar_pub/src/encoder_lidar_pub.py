@@ -13,8 +13,11 @@ import get_ip
 
 def receive_packet():
     #UDP_IP = "192.168.48.72" 
-    UDP_IP = get_ip.get_local()
-    #UDP_IP = 'localhost' #TEST CODE    
+    # try:
+    #     UDP_IP = get_ip.get_local()
+    # except SocketError:
+    #     UDP_IP = 'localhost'
+    UDP_IP = 'localhost' #TEST CODE    
     UDP_PORT = 49151
  
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP

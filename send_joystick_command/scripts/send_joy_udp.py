@@ -12,7 +12,7 @@ pub = rospy.Publisher('joy_joy', String)
 lastVelocityCommand = [0,0]
 lastMessageTime = time.clock()
 
-def IPSendPack(stringdata):
+def joystick_send(stringdata):
     global lastMessageTime
 
     UDP_IP = "192.168.50.9"
@@ -34,31 +34,13 @@ def SendLastVelocityCommand():
     global lastVelocityCommand
     IsVelocityCommandBelowThreshold()
     IPSendPack(str(lastVelocityCommand[0]) + '%' + str(lastVelocityCommand[1]))
-    
 
-
-def IsAheadUsed(AheadCheck):
-    if AheadCheck != 1:
-        return True
+def create_equal(throttle_command, forward): #YOYOYOYO BETTER NAME!!!
+    treadsAhead = 500*(-1*throttle_command+1)
+    if forward:
+        return [treadsAhead, treadsAhead]
     else:
-        return False
-    
-
-def IsReverseUsed(ReverseCheck):
-    if ReverseCheck !=1:
-        return True
-    else:
-        return False
-    
-
-
-def CalculateAheadCommand(throtleCommand):
-    treadsAhead = 500*(-1*throtleCommand+1)
-    return [treadsAhead,treadsAhead]    
-
-def CalculateReverseCommand(throtleCommand):
-    treadsReverse = -500*(-1*throtleCommand+1)
-    return [treadsReverse,treadsReverse]
+        return [-treadsAhead, -treadsAhead]
 
 def StopMotionCommand():
     return [0,0]
@@ -67,26 +49,25 @@ def ReceiveAndSendToRecipient(joy_data):
     global lastVelocityCommand
     global timeBetweenCommands
 
-
-    leftTread = float(joy_data.axes[1])
-    rightTread = float(joy_data.axes[4])
-    rightThrotle = float(joy_data.axes[5])
-    leftThrotle = float(joy_data.axes[2])
+    left_tread = float(joy_data.axes[1])
+    right_tread = float(joy_data.axes[4])
+    right_throttle = float(joy_data.axes[5])
+    left_throttle = float(joy_data.axes[2])
     precisionMotionButton = int(joy_data.buttons[5])
     stopMotionButton = int(joy_data.buttons[1])
     
     if stopMotionButton != 0:
         lastVelocityCommand = StopMotionCommand()
-    elif IsAheadUsed(rightThrotle):
-        lastVelocityCommand = CalculateAheadCommand(rightThrotle)
-    elif IsReverseUsed(leftThrotle): 
-        lastVelocityCommand = CalculateReverseCommand(leftThrotle)
+    elif right_throttle == 1:
+        lastVelocityCommand = create_equal(right_throttle, True)
+    elif left_throttle == 1: 
+        lastVelocityCommand = create_equal(left_throttle, False)
     elif precisionMotionButton == 1: 
         precisionFactor = 200
-        lastVelocityCommand = [precisionFactor*leftTread,precisionFactor*rightTread]
+        lastVelocityCommand = [precisionFactor*left_tread,precisionFactor*right_tread]
     else:
         velocityFactor = 500 
-        lastVelocityCommand = [velocityFactor*leftTread,velocityFactor*rightTread]
+        lastVelocityCommand = [velocityFactor*left_tread,velocityFactor*right_tread]
     
     if IsTimerExpired(timeBetweenCommands):        
         SendLastVelocityCommand()
