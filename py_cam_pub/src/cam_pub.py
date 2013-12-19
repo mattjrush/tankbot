@@ -17,10 +17,10 @@ from sensor_msgs.msg import CompressedImage
 class CamNode:
     def __init__(self):
         # Get the ~private namespace parameters from command line or launch file.
-        self.UDP_IP = rospy.get_param('~UDP_IP', '192.168.48.72') #get_ip.get_local()
+        self.UDP_IP = rospy.get_param('~UDP_IP', '192.168.50.37') #get_ip.get_local()
         #if self.UDP_IP != 'localhost':
         #    self.UDP_IP = int(self.UDP_IP)
-        self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49153'))
+        self.UDP_PORT = int(rospy.get_param('~UDP_PORT', '49155'))
 
         # Create a dynamic reconfigure server.
         #self.server = DynamicReconfigureServer(ConfigType, self.reconfigure)

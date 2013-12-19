@@ -17,13 +17,13 @@ def receive_packet():
     #     UDP_IP = get_ip.get_local()
     # except SocketError:
     #     UDP_IP = 'localhost'
-    UDP_IP = 'localhost' #TEST CODE    
+    UDP_IP = '192.168.50.37' #TEST CODE    
     UDP_PORT = 49151
- 
+    
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
     packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
-
+    
     return packet
 
 def separate(rstring, choice):

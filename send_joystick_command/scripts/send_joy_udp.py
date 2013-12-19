@@ -33,7 +33,7 @@ def IsVelocityCommandBelowThreshold ():
 def SendLastVelocityCommand():
     global lastVelocityCommand
     IsVelocityCommandBelowThreshold()
-    IPSendPack(str(lastVelocityCommand[0]) + '%' + str(lastVelocityCommand[1]))
+    joystick_send(str(lastVelocityCommand[0]) + '%' + str(lastVelocityCommand[1]))
 
 def create_equal(throttle_command, forward): #YOYOYOYO BETTER NAME!!!
     treadsAhead = 500*(-1*throttle_command+1)

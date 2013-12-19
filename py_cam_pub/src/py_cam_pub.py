@@ -12,14 +12,13 @@ from sensor_msgs.msg import CompressedImage
 
 def receive_packet():
     #UDP_IP = "192.168.51.175" #get_ip.get_local()
-    UDP_PORT = 49151
-    UDP_IP = 'localhost' #TEST CODE    
-#    UDP_PORT = 49155 #TEST CODE
+    UDP_PORT = 49155
+    UDP_IP = '192.168.50.37' #TEST CODE    
+#   UDP_PORT = 49155 #TEST CODE
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
     packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
-
     return packet
 
 
