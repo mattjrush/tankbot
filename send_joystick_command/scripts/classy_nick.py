@@ -103,13 +103,15 @@ class SendJoy:
 
 if __name__ == '__main__':
     
-    try:
-        joy = SendJoy()
-        joy.update()
+    while not rospy.is_shutdown():
+            
+        try:
+            joy = SendJoy()
+            joy.update()
 
-    except rospy.ROSInterruptException: 
-        pass
+        except rospy.ROSInterruptException: 
+            pass
 
-    # while not rospy.is_shutdown():
-    #     if IsTimerExpired(timeBetweenCommands):
-    #         SendLastVelocityCommand()    
+        # while not rospy.is_shutdown():
+        #     if IsTimerExpired(timeBetweenCommands):
+        #         SendLastVelocityCommand()    
