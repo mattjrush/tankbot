@@ -50,21 +50,21 @@ class LidarNode:
     def create_lidar_msg(self, L):
  
         raw_lidar = L.data
-        stripped_lidar = raw_lidar.translate(None, '[]').translate(None, '"').translate(None, '\'')
-        array_lidar = stripped_lidar.split(",")
+        #stripped_lidar = raw_lidar.translate(None, '[]').translate(None, '"').translate(None, '\'')
+        array_lidar = raw_lidar.split(";")
         
         lidar_msg = LaserScan()
         lidar_msg.header = self.create_header() #self?
-        lidar_msg.angle_min = math.radians(float(array_lidar[2]))
-        lidar_msg.angle_max = math.radians(float(array_lidar[3]))
+        lidar_msg.angle_min = math.radians(float(array_lidar[0]))
+        lidar_msg.angle_max = math.radians(float(array_lidar[1]))
         lidar_msg.angle_increment = math.radians(0.25) #MAKE PARAM
         lidar_msg.time_increment = 0.025/(270*4) #time in ms / measurements YOYOYOYO CHECK THIS
-        lidar_msg.scan_time = float(array_lidar[4]) / 1000 #time in ms
-        lidar_msg.range_min = float(array_lidar[6]) / 1000 #sent in mm, should be meters
-        lidar_msg.range_max = float(array_lidar[7]) / 1000 #sent in mm, should be meters
+        lidar_msg.scan_time = float(array_lidar[2]) / 1000 #time in ms
+        lidar_msg.range_min = float(array_lidar[4]) / 1000 #sent in mm, should be meters
+        lidar_msg.range_max = float(array_lidar[5]) / 1000 #sent in mm, should be meters
 
 
-        array_string = array_lidar[5].translate(None, '[]')
+        array_string = array_lidar[3]   #.translate(None, '[]')
         string_array = array_string.split(",")
         lidar_msg.ranges = [float(r) / 1000 for r in string_array] #better way?
 

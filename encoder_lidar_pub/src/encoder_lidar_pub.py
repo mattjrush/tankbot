@@ -30,11 +30,11 @@ def receive_packet():
 
 def separate(rstring, choice):
 
-    package = rstring.split(";")
+    package = rstring.split("%")
     if choice == "encoders":
-        return package[:2]
+        return package[0]
     elif choice == "lidar":
-        return package[2:]
+        return package[1]
 
 # create ros::Publisher to send LaserScan messages
 rospy.init_node("seperator") #ros::NodeHandle n;

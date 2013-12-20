@@ -21,8 +21,7 @@ class OdomNode:
     def string_to_raw_odom(self, O):
         
         raw_odom = O.data
-        stripped_odom = raw_odom.translate(None, '[]').translate(None, '"').translate(None, '\'')
-        array_odom = stripped_odom.split(",")
+        array_odom = raw_odom.split(";")
         #print package[0]
 
         l_val = Int16()
