@@ -23,7 +23,9 @@ def receive_packet():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
     packet, addr = sock.recvfrom(100000) # buffer size is not 1024 bytes
-    
+    shoe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+    shoe.sendto(packet, ('192.168.1.102', UDP_PORT))    
+
     return packet
 
 def separate(rstring, choice):

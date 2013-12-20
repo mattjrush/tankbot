@@ -7,7 +7,7 @@
   <node name="raw_odom" pkg="py_odom_publisher" type="odom_pub.py"/>
 
   <!-- PUBLISH LASERSCAN MESSAGES TO BASE_SCAN -->
-  <node name="base_scan" pkg="py_lidar_publisher" type="py_laser_scan_publisher.py">
+  <node name="base_scan" pkg="py_lidar_publisher" type="lidar_pub.py">
     <param name="num_readings" value="1440"/>
   </node>
 
@@ -29,11 +29,15 @@
 
   <!-- SLAM - -->
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
-    <param name="delta" value="0.5"/>
+    <param name="delta" value="0.01"/>
+    <param name="xmin" value="-10"/>
+    <param name="xmax" value="10"/>
+    <param name="ymin" value="-10"/>
+    <param name="ymax" value="10"/>
     <param name="maxUrange" value="2.75"/>
     <param name="maxRange" value="3"/>
     <param name="linearUpdate" value="0"/>
-    <param name="angularUpdate" value="0"/>
+    <param name="angularUpdate" value="10"/>
     <param name="temporalUpdate" value="1"/>
     <remap from="/scan" to="/base_scan" />
   </node>

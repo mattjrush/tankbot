@@ -23,7 +23,7 @@ class LidarNode:
         # Initialize the node and name it.
         rospy.init_node("base_scan") #ros::NodeHandle n;
         # create ros::Publisher to send LaserScan messages
-        scanPub = rospy.Publisher('base_scan', LaserScan) 
+        self.scanPub = rospy.Publisher('base_scan', LaserScan) 
 
         self.num_readings = rospy.get_param('~num_readings', 1000)
 
@@ -54,21 +54,21 @@ class LidarNode:
         array_lidar = stripped_lidar.split(",")
         
         lidar_msg = LaserScan()
-        lidar_msg.header = create_header() #self?
-        lidar_msg.angle_min = math.radians(float(data[2]))
-        lidar_msg.angle_max = math.radians(float(data[3]))
-        lidar_msg.angle_increment = math.radians(.25) #MAKE PARAM
-        lidar_msg.time_increment = float(data[4] / 1000) #time in ms / measurements YOYOYOYO CHECK THIS
-        lidar_msg.scan_time = float(100 / 1000) #time in ms
-        lidar_msg.range_min = float(data[6]) / 1000 #sent in mm, should be meters
-        lidar_msg.range_max = float(data[7]) / 1000 #sent in mm, should be meters
+        lidar_msg.header = self.create_header() #self?
+        lidar_msg.angle_min = math.radians(float(array_lidar[2]))
+        lidar_msg.angle_max = math.radians(float(array_lidar[3]))
+        lidar_msg.angle_increment = math.radians(0.25) #MAKE PARAM
+        lidar_msg.time_increment = 0.025/(270*4) #time in ms / measurements YOYOYOYO CHECK THIS
+        lidar_msg.scan_time = float(array_lidar[4]) / 1000 #time in ms
+        lidar_msg.range_min = float(array_lidar[6]) / 1000 #sent in mm, should be meters
+        lidar_msg.range_max = float(array_lidar[7]) / 1000 #sent in mm, should be meters
 
 
-        array_string = data[5].translate(None, '[]')
+        array_string = array_lidar[5].translate(None, '[]')
         string_array = array_string.split(",")
         lidar_msg.ranges = [float(r) / 1000 for r in string_array] #better way?
 
-        scanPub.publish(scan)
+        self.scanPub.publish(lidar_msg)
 
     def update(self):
         
